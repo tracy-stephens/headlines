@@ -1,4 +1,7 @@
 from sklearn.cluster import DBSCAN
+from sklearn.metrics import silhouette_score
+from sklearn.metrics import calinski_harabasz_score
+from s_dbw import S_Dbw, SD
 import numpy as np
 
 
@@ -34,8 +37,17 @@ class model:
     def cluster_sizes(self):
         return [i.shape[0] for i in self.clusters()[:]]
 
-    def dunns_index(self):
-        pass
+    def silhouette_score(self):
+        return silhouette_score(self.data, self.labels(), metric='cosine')
+
+    def calinski_harabasz_score(self):
+        return calinski_harabasz_score(self.data, self.labels())
+
+    def s_dbw(self):
+        return S_Dbw(self.data, self.labels())
+
+    def sd(self):
+        return SD(self.data, self.labels())
 
 
 if __name__ == "__main__":
