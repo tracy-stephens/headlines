@@ -46,35 +46,15 @@ def filter_articles(start_date, end_date, filters, cols, keywords=[]):
     return output
 
 
-def filter_file(month, year, filters, cols, keywords=[]):
-    df = get_raw_json(month, year)
-    df = separate_dict_col(df, 'headline')
-    df = separate_dict_col(df, 'byline')
-    try:
-        for k, v in filters.items():
-            df = df[df[k] == v]
-        if keywords:
-            for i in df.index:
-                if df['keywords'][i]:
-                    kw_ls = [kw['value'] for kw in df['keywords'][i]]
-                    if len(list(set(kw_ls) & set(keywords))) == 0:
-                        df = df.drop(index=i)
-                else:
-                    df = df.drop(index=i)
-    except KeyError:
-        pass
-    return df
-
-
 if __name__ == "__main__":
     cols = ['abstract', 'main', 'person', 'pub_date', 'keywords']
     filters = {
-        #'section_name': 'World',
+        'section_name': 'World',
         #'subsection_name': "Europe"
     }
     keywords = ['Brazil']
 
-    start_date = datetime(1998, 1, 1)
+    start_date = datetime(2000, 1, 1)
     end_date = datetime(2020, 6, 1)
 
     df = filter_articles(start_date, end_date,
@@ -82,5 +62,5 @@ if __name__ == "__main__":
 
     print(df)
     # save to file
-    file_name = 'data/brazil.csv'
+    file_name = 'data/brazil_world.csv'
     df.to_csv(file_name, index=False)

@@ -1,6 +1,10 @@
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import calinski_harabasz_score
+from sklearn.metrics import homogeneity_score
+from sklearn.metrics import completeness_score
+from sklearn.metrics import v_measure_score
+from sklearn.metrics.pairwise import cosine_similarity
 from s_dbw import S_Dbw, SD
 import numpy as np
 
@@ -37,17 +41,50 @@ class model:
     def cluster_sizes(self):
         return [i.shape[0] for i in self.clusters()[:]]
 
+    def cluster_centers(self):
+        pass
+
     def silhouette_score(self):
-        return silhouette_score(self.data, self.labels(), metric='cosine')
+        if self.num_clusters() > 0:
+            return silhouette_score(self.data, self.labels(), metric='cosine')
+        else:
+            return np.nan
 
     def calinski_harabasz_score(self):
-        return calinski_harabasz_score(self.data, self.labels())
+        if self.num_clusters() > 0:
+            return calinski_harabasz_score(self.data, self.labels())
+        else:
+            return np.nan
 
     def s_dbw(self):
-        return S_Dbw(self.data, self.labels())
+        if self.num_clusters() > 0:
+            return S_Dbw(self.data, self.labels())
+        else:
+            return np.nan
 
     def sd(self):
-        return SD(self.data, self.labels())
+        if self.num_clusters() > 0:
+            return SD(self.data, self.labels())
+        else:
+            return np.nan
+
+    def homogeneity_score(self, true_labels):
+        labels = self.labels()
+        pred_labels = [l for l in labels if l > -1]
+        true_labels_2 = [true_labels[i] for i in range(len(labels)) if labels[i] > -1]
+        return homogeneity_score(true_labels_2, pred_labels)
+
+    def completeness_score(self, true_labels):
+        labels = self.labels()
+        pred_labels = [l for l in labels if l > -1]
+        true_labels_2 = [true_labels[i] for i in range(len(labels)) if labels[i] > -1]
+        return completeness_score(true_labels_2, pred_labels)
+
+    def v_measure_score(self, true_labels):
+        labels = self.labels()
+        pred_labels = [l for l in labels if l > -1]
+        true_labels_2 = [true_labels[i] for i in range(len(labels)) if labels[i] > -1]
+        return v_measure_score(true_labels_2, pred_labels)
 
 
 if __name__ == "__main__":
